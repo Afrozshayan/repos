@@ -1,0 +1,333 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afroz Shopping App</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        .cart {
+            background: #ff9800;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .search {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .search input {
+            width: 60%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .product {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product .image {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        .product h2 {
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: green;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1976d2;
+        }
+
+        .cart-section {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #cartItems {
+            margin: 15px 0;
+        }
+
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🛒 Afroz Shopping</h1>
+    <div class="cart">
+        Cart: <span id="cartCount">0</span>
+    </div>
+</header>
+
+<div class="search">
+    <input
+        type="text"
+        id="searchBox"
+        placeholder="Search products..."
+        onkeyup="searchProducts()"
+    >
+</div>
+
+<section class="products" id="products">
+
+    <div class="product" data-name="Laptop">
+        <div class="image">💻</div>
+        <h2>Laptop</h2>
+        <p>High-performance laptop</p>
+        <div class="price">₹55,000</div>
+        <button onclick="addToCart('Laptop', 55000)">
+            Add to Cart
+        </button>
+    </div>
+
+    <div class="product" data-name="Mobile">
+        <div class="image">📱</div>
+        <h2>Mobile</h2>
+        <p>Latest Android smartphone</p>
+        <div class="price">₹25,000</div>
+        <button onclick="addToCart('Mobile', 25000)">
+            Add to Cart
+        </button>
+    </div>
+
+    <div class="product" data-name="Headphones">
+        <div class="image">🎧</div>
+        <h2>Headphones</h2>
+        <p>Wireless headphones</p>
+        <div class="price">₹2,500</div>
+        <button onclick="addToCart('Headphones', 2500)">
+            Add to Cart
+        </button>
+    </div>
+
+    <div class="product" data-name="Watch">
+        <div class="image">⌚</div>
+        <h2>Smart Watch</h2>
+        <p>Fitness smart watch</p>
+        <div class="price">₹4,000</div>
+        <button onclick="addToCart('Smart Watch', 4000)">
+            Add to Cart
+        </button>
+    </div>
+
+</section>
+
+<section class="cart-section">
+    <h2>🛍️ Shopping Cart</h2>
+
+    <div id="cartItems">
+        Your cart is empty.
+    </div>
+
+    <h3>Total: ₹<span id="total">0</span></h3>
+
+    <br>
+
+    <button onclick="checkout()">
+        Checkout
+    </button>
+</section>
+
+<footer>
+    © 2026 Afroz Shopping Application
+</footer>
+
+<script>
+
+    let cart = [];
+    let total = 0;
+
+    function addToCart(product, price) {
+
+        cart.push({
+            name: product,
+            price: price
+        });
+
+        total += price;
+
+        updateCart();
+    }
+
+    function updateCart() {
+
+        document.getElementById("cartCount").innerText = cart.length;
+
+        let cartItems = document.getElementById("cartItems");
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = "Your cart is empty.";
+        } else {
+
+            cartItems.innerHTML = "";
+
+            cart.forEach((item, index) => {
+
+                let div = document.createElement("div");
+
+                div.innerHTML =
+                    item.name +
+                    " - ₹" +
+                    item.price +
+                    " " +
+                    "<button onclick='removeFromCart(" + index + ")'>Remove</button>";
+
+                cartItems.appendChild(div);
+            });
+        }
+
+        document.getElementById("total").innerText = total;
+    }
+
+    function removeFromCart(index) {
+
+        total -= cart[index].price;
+
+        cart.splice(index, 1);
+
+        updateCart();
+    }
+
+    function checkout() {
+
+        if (cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+
+        alert(
+            "Order placed successfully!\nTotal Amount: ₹" +
+            total
+        );
+
+        cart = [];
+        total = 0;
+
+        updateCart();
+    }
+
+    function searchProducts() {
+
+        let search =
+            document.getElementById("searchBox")
+            .value
+            .toLowerCase();
+
+        let products =
+            document.querySelectorAll(".product");
+
+        products.forEach(function(product) {
+
+            let name =
+                product
+                .getAttribute("data-name")
+                .toLowerCase();
+
+            if (name.includes(search)) {
+                product.style.display = "block";
+            } else {
+                product.style.display = "none";
+            }
+
+        });
+    }
+
+</script>
+
+</body>
+</html>
+```
+
+### Run it
+
+Save the file as:
+
+```text
+index.html
+```
+
+Then open it directly in your browser.
+
+If you're using this for your **Docker/DevOps practice**, you can also deploy it with **Nginx in Docker**:
+
+```bash
+docker run -d \
+  --name shopping-app \
+  -p 8080:80 \
+  -v $(pwd):/usr/share/nginx/html \
+  nginx
+```
+
+Then access:
+
+```text
+http://<EC2-PUBLIC-IP>:8080
+```
+
+Make sure **port 8080 is allowed in the EC2 Security Group**.
